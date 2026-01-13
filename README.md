@@ -39,7 +39,10 @@ Files in the `contracts/gauge` folder are licensed under the Business Source Lic
 ## Bug Bounty
 Velodrome has a live bug bounty hosted on ([Immunefi](https://immunefi.com/bounty/velodromefinance/)).
 
-## Deployment
+## Deployments
+
+### Initial Deployment
+Initial deployment of Slipstream contracts on Base.
 
 | Name               | Address                                                                                                                               |
 | :----------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
@@ -56,3 +59,31 @@ Velodrome has a live bug bounty hosted on ([Immunefi](https://immunefi.com/bount
 | SwapRouter               | [0xBE6D8f0d05cC4be24d5167a3eF062215bE6D18a5](https://basescan.org/address/0xBE6D8f0d05cC4be24d5167a3eF062215bE6D18a5#code) |
 | SugarHelper               | [0x0AD09A66af0154a84e86F761313d02d0abB6edd5](https://basescan.org/address/0x0AD09A66af0154a84e86F761313d02d0abB6edd5#code) |
 | DynamicSwapFeeModule               | [0xDB45818A6db280ecfeB33cbeBd445423d0216b5D](https://basescan.org/address/0xDB45818A6db280ecfeB33cbeBd445423d0216b5D#code) |
+
+### Gauge Caps Deployment
+Deployment with gauge emission cap enforcement and redistributor functionality to manage and reallocate excess emissions.
+
+**Key Changes:**
+- **Gauge Caps**:
+    - `CLGauge` enforces emission caps to limit rewards per gauge.
+    - The emission cap is set as a percentage of total weekly emissions.
+    - When a gauge exceeds its cap, excess emissions are automatically transferred to the `Redistributor`.
+- **Redistributor**:
+    - Manages redistribution of excess emissions when gauges exceed their caps.
+    - Collects excess emissions from capped gauges and redistributes them to other eligible gauges proportionally to their voting weight.
+
+| Name               | Address                                                                                                                               |
+| :----------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
+| GaugeFactory               | [0xB630227a79707D517320b6c0f885806389dFcbB3](https://basescan.org/address/0xB630227a79707D517320b6c0f885806389dFcbB3#code) |
+| GaugeImplementation               | [0xC0d2086B6f70C0C40423626167096c6196cFA0c8](https://basescan.org/address/0xC0d2086B6f70C0C40423626167096c6196cFA0c8#code) |
+| MixedQuoter               | [0x49540630A4d2CE67d54450D007D634F4c45B4f4f](https://basescan.org/address/0x49540630A4d2CE67d54450D007D634F4c45B4f4f#code) |
+| NonfungiblePositionManager               | [0xa990C6a764b73BF43cee5Bb40339c3322FB9D55F](https://basescan.org/address/0xa990C6a764b73BF43cee5Bb40339c3322FB9D55F#code) |
+| NonfungibleTokenPositionDescriptor               | [0xf632031B94D72deE0D99DeF846c9b6211041337f](https://basescan.org/address/0xf632031B94D72deE0D99DeF846c9b6211041337f#code) |
+| PoolFactory               | [0xaDe65c38CD4849aDBA595a4323a8C7DdfE89716a](https://basescan.org/address/0xaDe65c38CD4849aDBA595a4323a8C7DdfE89716a#code) |
+| PoolImplementation               | [0x942e97a4c6FdC38B4CD1c0298D37d81fDD8E5A16](https://basescan.org/address/0x942e97a4c6FdC38B4CD1c0298D37d81fDD8E5A16#code) |
+| Quoter               | [0x3d4C22254F86f64B7eC90ab8F7aeC1FBFD271c6C](https://basescan.org/address/0x3d4C22254F86f64B7eC90ab8F7aeC1FBFD271c6C#code) |
+| SwapFeeModule               | [0x5264Eeeab16037A7A7AF15Ff69A470af6e2a2223](https://basescan.org/address/0x5264Eeeab16037A7A7AF15Ff69A470af6e2a2223#code) |
+| SwapRouter               | [0xcbBb8035cAc7D4B3Ca7aBb74cF7BdF900215Ce0D](https://basescan.org/address/0xcbBb8035cAc7D4B3Ca7aBb74cF7BdF900215Ce0D#code) |
+| UnstakedFeeModule               | [0xCCC21f4750E8B3E9C095BCB5d2fF59247A2CCD35](https://basescan.org/address/0xCCC21f4750E8B3E9C095BCB5d2fF59247A2CCD35#code) |
+| DynamicSwapFeeModule               | [0x00cB12a1c84dfC1b9c70734C0385E769Bc86e9Ef](https://basescan.org/address/0x00cB12a1c84dfC1b9c70734C0385E769Bc86e9Ef#code) |
+| Redistributor               | [0x11a53f31Bf406de59fCf9613E1922bd3E283A4B4](https://basescan.org/address/0x11a53f31Bf406de59fCf9613E1922bd3E283A4B4#code) |
