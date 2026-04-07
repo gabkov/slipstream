@@ -58,7 +58,7 @@ Initial deployment of Slipstream contracts on Base.
 | CustomUnstakedFeeModule               | [0x0AD08370c76Ff426F534bb2AFFD9b5555338ee68](https://basescan.org/address/0x0AD08370c76Ff426F534bb2AFFD9b5555338ee68#code) |
 | SwapRouter               | [0xBE6D8f0d05cC4be24d5167a3eF062215bE6D18a5](https://basescan.org/address/0xBE6D8f0d05cC4be24d5167a3eF062215bE6D18a5#code) |
 | SugarHelper               | [0x0AD09A66af0154a84e86F761313d02d0abB6edd5](https://basescan.org/address/0x0AD09A66af0154a84e86F761313d02d0abB6edd5#code) |
-| DynamicSwapFeeModule               | [0xDB45818A6db280ecfeB33cbeBd445423d0216b5D](https://basescan.org/address/0xDB45818A6db280ecfeB33cbeBd445423d0216b5D#code) |
+| DynamicSwapFeeModule               | [0x090b2A6bb475c00e2256e2095A60887cD710803b](https://basescan.org/address/0x090b2A6bb475c00e2256e2095A60887cD710803b#code) |
 
 ### Gauge Caps Deployment
 Deployment with gauge emission cap enforcement and redistributor functionality to manage and reallocate excess emissions.
@@ -85,5 +85,5 @@ Deployment with gauge emission cap enforcement and redistributor functionality t
 | SwapFeeModule               | [0x5264Eeeab16037A7A7AF15Ff69A470af6e2a2223](https://basescan.org/address/0x5264Eeeab16037A7A7AF15Ff69A470af6e2a2223#code) |
 | SwapRouter               | [0xcbBb8035cAc7D4B3Ca7aBb74cF7BdF900215Ce0D](https://basescan.org/address/0xcbBb8035cAc7D4B3Ca7aBb74cF7BdF900215Ce0D#code) |
 | UnstakedFeeModule               | [0xCCC21f4750E8B3E9C095BCB5d2fF59247A2CCD35](https://basescan.org/address/0xCCC21f4750E8B3E9C095BCB5d2fF59247A2CCD35#code) |
-| DynamicSwapFeeModule               | [0x00cB12a1c84dfC1b9c70734C0385E769Bc86e9Ef](https://basescan.org/address/0x00cB12a1c84dfC1b9c70734C0385E769Bc86e9Ef#code) |
+| DynamicSwapFeeModule               | [0xF4Ecd78EBEB6d36CF7f80B5B6B41453515fe2785](https://basescan.org/address/0xF4Ecd78EBEB6d36CF7f80B5B6B41453515fe2785#code) |
 | Redistributor               | [0x11a53f31Bf406de59fCf9613E1922bd3E283A4B4](https://basescan.org/address/0x11a53f31Bf406de59fCf9613E1922bd3E283A4B4#code) |
