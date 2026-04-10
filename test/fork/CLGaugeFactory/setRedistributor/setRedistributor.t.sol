@@ -30,6 +30,7 @@ contract SetRedistributorIntegrationConcreteTest is CLGaugeFactoryForkTest {
             new Redistributor({
                 _voter: address(voter),
                 _gaugeFactory: address(gaugeFactory),
+                _legacyGaugeFactory: address(gaugeFactory),
                 _upkeepManager: address(upkeepManager),
                 _initialOwner: users.owner
             })

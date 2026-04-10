@@ -107,10 +107,16 @@ interface IRedistributor {
     function escrow() external view returns (address);
 
     /**
-     * @notice The address of the CL gauge factory with emission cap support
+     * @notice The address of the primary CL gauge factory with emission cap support
      * @return Address of the gauge factory
      */
     function gaugeFactory() external view returns (address);
+
+    /**
+     * @notice The address of the legacy CL gauge factory with emission cap support
+     * @return Address of the legacy gauge factory, or address(0) if not set
+     */
+    function legacyGaugeFactory() external view returns (address);
 
     /**
      * @notice The address of the reward token distributed by gauges

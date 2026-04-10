@@ -28,6 +28,8 @@ contract Redistributor is IRedistributor, Ownable, ReentrancyGuard {
     /// @inheritdoc IRedistributor
     address public immutable override gaugeFactory;
     /// @inheritdoc IRedistributor
+    address public immutable override legacyGaugeFactory;
+    /// @inheritdoc IRedistributor
     address public immutable override rewardToken;
 
     /// @inheritdoc IRedistributor
@@ -46,11 +48,18 @@ contract Redistributor is IRedistributor, Ownable, ReentrancyGuard {
     /// @inheritdoc IRedistributor
     mapping(uint256 => mapping(address => bool)) public override isRedistributed;
 
-    constructor(address _voter, address _gaugeFactory, address _upkeepManager, address _initialOwner) {
+    constructor(
+        address _voter,
+        address _gaugeFactory,
+        address _legacyGaugeFactory,
+        address _upkeepManager,
+        address _initialOwner
+    ) {
         voter = IVoter(_voter);
         minter = IVoter(_voter).minter();
         escrow = address(IVoter(_voter).ve());
         gaugeFactory = _gaugeFactory;
+        legacyGaugeFactory = _legacyGaugeFactory;
         rewardToken = ICLGaugeFactory(_gaugeFactory).rewardToken();
         upkeepManager = _upkeepManager;
 
@@ -191,6 +200,19 @@ contract Redistributor is IRedistributor, Ownable, ReentrancyGuard {
     }
 
     /**
+     * @notice Returns the gauge factory that owns the given gauge, or address(0) if none
+     */
+    function _getGaugeFactory(address _gauge) internal view returns (address) {
+        try ICLGaugeFactory(gaugeFactory).isGauge({_gauge: _gauge}) returns (bool isGauge_) {
+            if (isGauge_) return gaugeFactory;
+        } catch {}
+        try ICLGaugeFactory(legacyGaugeFactory).isGauge({_gauge: _gauge}) returns (bool isGauge_) {
+            if (isGauge_) return legacyGaugeFactory;
+        } catch {}
+        return address(0);
+    }
+
+    /**
      * @notice Redistributes the recycled emissions to the given gauge, proportionally to its voting weight
      * @dev Assumes the specified gauge is linked to the pool
      * @param _gauge The gauge to redistribute the emissions to
@@ -215,9 +237,10 @@ contract Redistributor is IRedistributor, Ownable, ReentrancyGuard {
             if (gaugeEmissions == 0) return;
 
             if (voter.isAlive({_gauge: _gauge})) {
-                if (ICLGaugeFactory(gaugeFactory).isGauge({_gauge: _gauge})) {
+                address _gaugeFactory = _getGaugeFactory(_gauge);
+                if (_gaugeFactory != address(0)) {
                     uint256 prevEmissions = ICLGauge(_gauge).rewardsByEpoch({_epochStart: _epochStart});
-                    uint256 maxEmissions = ICLGaugeFactory(gaugeFactory).calculateMaxEmissions({_gauge: _gauge});
+                    uint256 maxEmissions = ICLGaugeFactory(_gaugeFactory).calculateMaxEmissions({_gauge: _gauge});
                     /// @dev Forward emissions to minter if distribute failed for a gauge with emission cap
                     ///      or if the emission cap has already been exceeded
                     if (prevEmissions == 0 || prevEmissions >= maxEmissions) {

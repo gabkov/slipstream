@@ -53,6 +53,7 @@ abstract contract RedistributorForkTest is BaseForkFixture {
         assertEq(redistributor.minter(), address(minter));
         assertEq(redistributor.escrow(), address(escrow));
         assertEq(redistributor.gaugeFactory(), address(gaugeFactory));
+        assertEq(redistributor.legacyGaugeFactory(), address(gaugeFactory));
         assertEq(redistributor.rewardToken(), address(rewardToken));
         assertEq(redistributor.upkeepManager(), address(upkeepManager));
         assertEq(redistributor.keeper(), address(0));

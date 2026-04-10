@@ -9,5 +9,3 @@ SetSecondsAgoTest
     └── When seconds ago is correct amount
         ├── It should set the new secondsAgo
         └── It should emit a {SecondsAgoSet} event
-
- 

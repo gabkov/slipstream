@@ -87,3 +87,30 @@ Deployment with gauge emission cap enforcement and redistributor functionality t
 | UnstakedFeeModule               | [0xCCC21f4750E8B3E9C095BCB5d2fF59247A2CCD35](https://basescan.org/address/0xCCC21f4750E8B3E9C095BCB5d2fF59247A2CCD35#code) |
 | DynamicSwapFeeModule               | [0xF4Ecd78EBEB6d36CF7f80B5B6B41453515fe2785](https://basescan.org/address/0xF4Ecd78EBEB6d36CF7f80B5B6B41453515fe2785#code) |
 | Redistributor               | [0x11a53f31Bf406de59fCf9613E1922bd3E283A4B4](https://basescan.org/address/0x11a53f31Bf406de59fCf9613E1922bd3E283A4B4#code) |
+
+### Gauges V3 Deployment
+This is the current latest deployment of the gauges. Existing gauges are still in use, but all new gauges will be deployed from here.
+
+**Key Changes:**
+- **Minimum Stake Time**: Per-pool configurable minimum stake duration.
+- **Early Unstake Penalty**: Penalty rate applied to both `getReward` and `withdraw` if called before the minimum stake time has elapsed.
+- **Dynamic Swap Fee Module**: Replaces `CustomSwapFeeModule` with dynamic fee scaling based on tick crossings.
+- **MixedRouteQuoterV3**: New quoter supporting 3 CL factories via bitmask encoding.
+- **Redistributor**: Updated to support dual CL gauge factories.
+
+| Name               | Address                                                                                                                               |
+| :----------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
+| DynamicSwapFeeModule               | [0x87D8f999BBa9343E8099552426775B51C338E8CB](https://basescan.org/address/0x87D8f999BBa9343E8099552426775B51C338E8CB#code) |
+| GaugeFactory               | [0x385293CaE378C813F16f0C1334d774AdDDf56AbB](https://basescan.org/address/0x385293CaE378C813F16f0C1334d774AdDDf56AbB#code) |
+| GaugeImplementation               | [0x434BCcaB043311a20b16021C137EA81702790f7B](https://basescan.org/address/0x434BCcaB043311a20b16021C137EA81702790f7B#code) |
+| MixedQuoter               | [0x9951FF0b830E46ef0e7Ce34d9117e3214B1F0b5a](https://basescan.org/address/0x9951FF0b830E46ef0e7Ce34d9117e3214B1F0b5a#code) |
+| MixedQuoterV2               | [0xb4A9E5Fc0727BEF09D819fcfc5ece8CA9bCf09EB](https://basescan.org/address/0xb4A9E5Fc0727BEF09D819fcfc5ece8CA9bCf09EB#code) |
+| MixedQuoterV3               | [0xCd2A7D98e82D6107eac1828ce8DeAA6acB65b555](https://basescan.org/address/0xCd2A7D98e82D6107eac1828ce8DeAA6acB65b555#code) |
+| NonfungiblePositionManager               | [0xe1f8cd9AC4e4A65F54f38a5CdAfCA44f6dD68b53](https://basescan.org/address/0xe1f8cd9AC4e4A65F54f38a5CdAfCA44f6dD68b53#code) |
+| NonfungibleTokenPositionDescriptor               | [0xc85C126442bb5B654792A70135805a9778C8e3fE](https://basescan.org/address/0xc85C126442bb5B654792A70135805a9778C8e3fE#code) |
+| PoolFactory               | [0xf8f2eB4940CFE7d13603DDDD87f123820Fc061Ef](https://basescan.org/address/0xf8f2eB4940CFE7d13603DDDD87f123820Fc061Ef#code) |
+| PoolImplementation               | [0xc770898522D2A9c8Da7A10D63989b6b58305B665](https://basescan.org/address/0xc770898522D2A9c8Da7A10D63989b6b58305B665#code) |
+| Quoter               | [0x514c8B5f54112481E28028F1166Bd78501089259](https://basescan.org/address/0x514c8B5f54112481E28028F1166Bd78501089259#code) |
+| Redistributor               | [0xEe5b3C7b333e2870B746b3B2b168EF0958e55e15](https://basescan.org/address/0xEe5b3C7b333e2870B746b3B2b168EF0958e55e15#code) |
+| SwapRouter               | [0x698Cb2b6dd822994581fEa6eA4Fc755d1363A92F](https://basescan.org/address/0x698Cb2b6dd822994581fEa6eA4Fc755d1363A92F#code) |
+| UnstakedFeeModule               | [0xc2cc3256434AfbC36Bb5e815e1Bb2151310a1a0b](https://basescan.org/address/0xc2cc3256434AfbC36Bb5e815e1Bb2151310a1a0b#code) |

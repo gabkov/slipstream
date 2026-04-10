@@ -12,7 +12,7 @@ import {NonfungibleTokenPositionDescriptor} from "contracts/periphery/Nonfungibl
 import {NonfungiblePositionManager} from "contracts/periphery/NonfungiblePositionManager.sol";
 import {CLGauge} from "contracts/gauge/CLGauge.sol";
 import {CLGaugeFactory} from "contracts/gauge/CLGaugeFactory.sol";
-import {CustomSwapFeeModule} from "contracts/core/fees/CustomSwapFeeModule.sol";
+import {DynamicSwapFeeModule} from "contracts/core/fees/DynamicSwapFeeModule.sol";
 import {CustomUnstakedFeeModule} from "contracts/core/fees/CustomUnstakedFeeModule.sol";
 import {MixedRouteQuoterV2} from "contracts/periphery/lens/MixedRouteQuoterV2.sol";
 
@@ -40,6 +40,7 @@ contract DeployCLForkTest is Test {
     address public poolFactoryOwner;
     address public legacyCLFactory;
     address public legacyCLGaugeFactory;
+    address public legacyCLGaugeFactory2;
     address public upkeepManager;
     address public feeManager;
     address public notifyAdmin;
@@ -57,7 +58,7 @@ contract DeployCLForkTest is Test {
     CLGauge public gaugeImplementation;
     CLGaugeFactory public gaugeFactory;
     Redistributor public redistributor;
-    CustomSwapFeeModule public swapFeeModule;
+    DynamicSwapFeeModule public swapFeeModule;
     CustomUnstakedFeeModule public unstakedFeeModule;
     MixedRouteQuoterV2 public mixedQuoterV2;
 
@@ -78,6 +79,7 @@ contract DeployCLForkTest is Test {
         poolFactoryOwner = abi.decode(vm.parseJson(jsonConstants, ".poolFactoryOwner"), (address));
         legacyCLFactory = abi.decode(vm.parseJson(jsonConstants, ".legacyCLFactory"), (address));
         legacyCLGaugeFactory = abi.decode(vm.parseJson(jsonConstants, ".legacyCLGaugeFactory"), (address));
+        legacyCLGaugeFactory2 = abi.decode(vm.parseJson(jsonConstants, ".legacyCLGaugeFactory2"), (address));
         upkeepManager = abi.decode(vm.parseJson(jsonConstants, ".upkeepManager"), (address));
         feeManager = abi.decode(vm.parseJson(jsonConstants, ".feeManager"), (address));
         notifyAdmin = abi.decode(vm.parseJson(jsonConstants, ".notifyAdmin"), (address));
@@ -153,11 +155,14 @@ contract DeployCLForkTest is Test {
         assertEq(redistributor.minter(), minter);
         assertEq(redistributor.escrow(), escrow);
         assertEq(redistributor.gaugeFactory(), address(gaugeFactory));
+        assertEq(redistributor.legacyGaugeFactory(), legacyCLGaugeFactory2);
         assertEq(redistributor.rewardToken(), rewardToken);
         assertEq(redistributor.upkeepManager(), upkeepManager);
 
         assertTrue(address(swapFeeModule) != address(0));
-        assertEq(swapFeeModule.MAX_FEE(), 30_000); // 3%, using pip denomination
+        assertEq(swapFeeModule.MAX_BASE_FEE(), 30_000); // 3%, using pip denomination
+        assertEq(swapFeeModule.defaultFeeCap(), 30_000); // 3%
+        assertEq(swapFeeModule.defaultScalingFactor(), 0);
         assertEq(address(swapFeeModule.factory()), address(poolFactory));
 
         assertTrue(address(unstakedFeeModule) != address(0));

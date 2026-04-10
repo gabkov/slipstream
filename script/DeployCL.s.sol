@@ -11,10 +11,11 @@ import {NonfungiblePositionManager} from "contracts/periphery/NonfungiblePositio
 import {CLGauge} from "contracts/gauge/CLGauge.sol";
 import {CLGaugeFactory} from "contracts/gauge/CLGaugeFactory.sol";
 import {Redistributor} from "contracts/gauge/Redistributor.sol";
-import {CustomSwapFeeModule} from "contracts/core/fees/CustomSwapFeeModule.sol";
+import {DynamicSwapFeeModule} from "contracts/core/fees/DynamicSwapFeeModule.sol";
 import {CustomUnstakedFeeModule} from "contracts/core/fees/CustomUnstakedFeeModule.sol";
 import {MixedRouteQuoterV1} from "contracts/periphery/lens/MixedRouteQuoterV1.sol";
 import {MixedRouteQuoterV2} from "contracts/periphery/lens/MixedRouteQuoterV2.sol";
+import {MixedRouteQuoterV3} from "contracts/periphery/lens/MixedRouteQuoterV3.sol";
 import {QuoterV2} from "contracts/periphery/lens/QuoterV2.sol";
 import {SwapRouter} from "contracts/periphery/SwapRouter.sol";
 
@@ -39,8 +40,13 @@ contract DeployCL is Script {
     address public redistributorOwner;
     address public factoryV2;
     address public legacyCLFactory;
+    address public legacyCLFactory2;
     address public legacyCLGaugeFactory;
+    address public legacyCLGaugeFactory2;
     address public upkeepManager;
+    address public gaugeStakeManager;
+    uint256 public minStakeTime;
+    uint256 public penaltyRate;
     string public nftName;
     string public nftSymbol;
 
@@ -52,10 +58,11 @@ contract DeployCL is Script {
     CLGauge public gaugeImplementation;
     CLGaugeFactory public gaugeFactory;
     Redistributor public redistributor;
-    CustomSwapFeeModule public swapFeeModule;
+    DynamicSwapFeeModule public swapFeeModule;
     CustomUnstakedFeeModule public unstakedFeeModule;
     MixedRouteQuoterV1 public mixedQuoter;
     MixedRouteQuoterV2 public mixedQuoterV2;
+    MixedRouteQuoterV3 public mixedQuoterV3;
     QuoterV2 public quoter;
     SwapRouter public swapRouter;
 
@@ -76,8 +83,13 @@ contract DeployCL is Script {
         redistributorOwner = abi.decode(vm.parseJson(jsonConstants, ".redistributorOwner"), (address));
         factoryV2 = abi.decode(vm.parseJson(jsonConstants, ".factoryV2"), (address));
         legacyCLFactory = abi.decode(vm.parseJson(jsonConstants, ".legacyCLFactory"), (address));
+        legacyCLFactory2 = abi.decode(vm.parseJson(jsonConstants, ".legacyCLFactory2"), (address));
         legacyCLGaugeFactory = abi.decode(vm.parseJson(jsonConstants, ".legacyCLGaugeFactory"), (address));
+        legacyCLGaugeFactory2 = abi.decode(vm.parseJson(jsonConstants, ".legacyCLGaugeFactory2"), (address));
         upkeepManager = abi.decode(vm.parseJson(jsonConstants, ".upkeepManager"), (address));
+        gaugeStakeManager = abi.decode(vm.parseJson(jsonConstants, ".gaugeStakeManager"), (address));
+        minStakeTime = abi.decode(vm.parseJson(jsonConstants, ".minStakeTime"), (uint256));
+        penaltyRate = abi.decode(vm.parseJson(jsonConstants, ".penaltyRate"), (uint256));
         nftName = abi.decode(vm.parseJson(jsonConstants, ".nftName"), (string));
         nftSymbol = abi.decode(vm.parseJson(jsonConstants, ".nftSymbol"), (string));
 
@@ -106,6 +118,7 @@ contract DeployCL is Script {
         redistributor = new Redistributor({
             _voter: address(voter),
             _gaugeFactory: address(gaugeFactory),
+            _legacyGaugeFactory: legacyCLGaugeFactory2,
             _upkeepManager: upkeepManager,
             _initialOwner: redistributorOwner
         });
@@ -124,9 +137,18 @@ contract DeployCL is Script {
         // set nft manager in the factories
         gaugeFactory.setNonfungiblePositionManager(address(nft));
         gaugeFactory.setNotifyAdmin(notifyAdmin);
+        gaugeFactory.setDefaultMinStakeTime(minStakeTime);
+        gaugeFactory.setPenaltyRate(penaltyRate);
+        gaugeFactory.setGaugeStakeManager(gaugeStakeManager);
 
         // deploy fee modules
-        swapFeeModule = new CustomSwapFeeModule({_factory: address(poolFactory)});
+        swapFeeModule = new DynamicSwapFeeModule({
+            _factory: address(poolFactory),
+            _defaultScalingFactor: 0,
+            _defaultFeeCap: 30_000,
+            _pools: new address[](0),
+            _fees: new uint24[](0)
+        });
         unstakedFeeModule = new CustomUnstakedFeeModule({_factory: address(poolFactory)});
         poolFactory.setSwapFeeModule({_swapFeeModule: address(swapFeeModule)});
         poolFactory.setUnstakedFeeModule({_unstakedFeeModule: address(unstakedFeeModule)});
@@ -146,6 +168,13 @@ contract DeployCL is Script {
             _factoryV2: factoryV2,
             _WETH9: weth
         });
+        mixedQuoterV3 = new MixedRouteQuoterV3({
+            _factory: address(poolFactory),
+            _legacyCLFactory: legacyCLFactory,
+            _legacyCLFactory2: legacyCLFactory2,
+            _factoryV2: factoryV2,
+            _WETH9: weth
+        });
         vm.stopBroadcast();
 
         // write to file
@@ -157,10 +186,11 @@ contract DeployCL is Script {
         vm.writeJson(vm.serializeAddress("", "NonfungiblePositionManager", address(nft)), path);
         vm.writeJson(vm.serializeAddress("", "GaugeImplementation", address(gaugeImplementation)), path);
         vm.writeJson(vm.serializeAddress("", "GaugeFactory", address(gaugeFactory)), path);
-        vm.writeJson(vm.serializeAddress("", "SwapFeeModule", address(swapFeeModule)), path);
+        vm.writeJson(vm.serializeAddress("", "DynamicSwapFeeModule", address(swapFeeModule)), path);
         vm.writeJson(vm.serializeAddress("", "UnstakedFeeModule", address(unstakedFeeModule)), path);
         vm.writeJson(vm.serializeAddress("", "MixedQuoter", address(mixedQuoter)), path);
         vm.writeJson(vm.serializeAddress("", "MixedQuoterV2", address(mixedQuoterV2)), path);
+        vm.writeJson(vm.serializeAddress("", "MixedQuoterV3", address(mixedQuoterV3)), path);
         vm.writeJson(vm.serializeAddress("", "Quoter", address(quoter)), path);
         vm.writeJson(vm.serializeAddress("", "SwapRouter", address(swapRouter)), path);
         vm.writeJson(vm.serializeAddress("", "Redistributor", address(redistributor)), path);
